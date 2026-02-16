@@ -27,7 +27,7 @@ Thank you for your interest in contributing! This guide covers how to report iss
 
 ### Prerequisites
 
-- Go 1.25.6 or later
+- Go 1.23 or later
 - [golangci-lint](https://golangci-lint.run/welcome/install/) (for linting)
 - GNU Make
 
