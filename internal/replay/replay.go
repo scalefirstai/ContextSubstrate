@@ -56,11 +56,12 @@ func Replay(storeRoot string, packHash string) (*ReplayReport, error) {
 	}
 
 	// Compute fidelity
-	if hasFailed {
+	switch {
+	case hasFailed:
 		report.Fidelity = FidelityFailed
-	} else if hasDiverged {
+	case hasDiverged:
 		report.Fidelity = FidelityDegraded
-	} else {
+	default:
 		report.Fidelity = FidelityExact
 	}
 

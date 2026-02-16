@@ -165,7 +165,7 @@ func TestResolveHashCtxURI(t *testing.T) {
 	root := setupTestStore(t)
 	registerTestPack(t, root, hash)
 
-	// ctx:// full hex
+	// Full hex with ctx:// prefix
 	resolved, err := ResolveHash(root, "ctx://"+hexStr)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -174,7 +174,7 @@ func TestResolveHashCtxURI(t *testing.T) {
 		t.Errorf("expected %s, got %s", hash, resolved)
 	}
 
-	// ctx:// short prefix
+	// Short prefix with ctx:// scheme
 	resolved, err = ResolveHash(root, "ctx://"+hexStr[:12])
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)

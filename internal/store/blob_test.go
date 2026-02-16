@@ -1,6 +1,7 @@
 package store
 
 import (
+	"bytes"
 	"os"
 	"path/filepath"
 	"testing"
@@ -32,7 +33,7 @@ func TestWriteAndReadBlob(t *testing.T) {
 	if err != nil {
 		t.Fatalf("ReadBlob failed: %v", err)
 	}
-	if string(got) != string(data) {
+	if !bytes.Equal(got, data) {
 		t.Errorf("expected %q, got %q", data, got)
 	}
 }
