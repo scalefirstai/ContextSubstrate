@@ -1,4 +1,12 @@
-# ContextSubstrate
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="demo/files/logo-horizontal-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="demo/files/logo-horizontal-light.svg">
+    <img alt="ContextSubstrate" src="demo/files/logo-horizontal-light.svg" width="420">
+  </picture>
+</p>
+
+<p align="center">
 
 [![CI](https://github.com/scalefirstai/ContextSubstrate/actions/workflows/ci.yml/badge.svg)](https://github.com/scalefirstai/ContextSubstrate/actions/workflows/ci.yml)
 [![Go Report Card](https://goreportcard.com/badge/github.com/contextsubstrate/ctx)](https://goreportcard.com/report/github.com/contextsubstrate/ctx)
@@ -6,7 +14,9 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Release](https://img.shields.io/github/v/release/scalefirstai/ContextSubstrate)](https://github.com/scalefirstai/ContextSubstrate/releases/latest)
 
-**Reproducible, debuggable, contestable AI agent execution.**
+</p>
+
+<p align="center"><strong>Reproducible, debuggable, contestable AI agent execution.</strong></p>
 
 `ctx` is an execution substrate for AI agents that makes their work reproducible, debuggable, and contestable using developer-native primitives — files, hashes, diffs, and CLI workflows.
 
