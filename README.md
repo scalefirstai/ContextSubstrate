@@ -10,6 +10,10 @@
 
 `ctx` is an execution substrate for AI agents that makes their work reproducible, debuggable, and contestable using developer-native primitives — files, hashes, diffs, and CLI workflows.
 
+<p align="center">
+  <img src="demo/ctx-demo.svg" alt="ctx demo" width="800">
+</p>
+
 ## Quick Start
 
 ```bash

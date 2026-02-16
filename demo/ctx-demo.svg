@@ -1,0 +1,218 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 560" width="820" height="560">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&amp;display=swap');
+    
+    .terminal-bg { fill: #0d1117; rx: 12; }
+    .terminal-header { fill: #161b22; }
+    .btn-close { fill: #ff5f57; }
+    .btn-min { fill: #febc2e; }
+    .btn-max { fill: #28c840; }
+    .title-text { fill: #8b949e; font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+    
+    .prompt { fill: #58a6ff; font-family: 'JetBrains Mono', monospace; font-size: 13.5px; font-weight: 700; }
+    .cmd { fill: #e6edf3; font-family: 'JetBrains Mono', monospace; font-size: 13.5px; }
+    .output { fill: #8b949e; font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+    .success { fill: #3fb950; font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+    .warn { fill: #d29922; font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+    .error { fill: #f85149; font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+    .hash { fill: #bc8cff; font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+    .accent { fill: #58a6ff; font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+    .dim { fill: #484f58; font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+    .highlight { fill: #ffa657; font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+    
+    .cursor {
+      fill: #58a6ff;
+      animation: blink 1s step-end infinite;
+    }
+    
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    
+    /* Phase 1: Capture (0s - 5s) */
+    .phase1 {
+      opacity: 0;
+      animation: fadeIn 0.3s ease forwards;
+    }
+    .p1-line1 { animation-delay: 0.3s; }
+    .p1-line2 { animation-delay: 0.8s; }
+    .p1-line3 { animation-delay: 1.2s; }
+    .p1-line4 { animation-delay: 1.6s; }
+    .p1-line5 { animation-delay: 2.0s; }
+    .p1-line6 { animation-delay: 2.4s; }
+    .p1-line7 { animation-delay: 2.8s; }
+    .p1-line8 { animation-delay: 3.2s; }
+    
+    /* Phase 2: Diff (5s - 10s) */
+    .phase2 {
+      opacity: 0;
+      animation: fadeIn 0.3s ease forwards;
+    }
+    .p2-line1 { animation-delay: 4.5s; }
+    .p2-line2 { animation-delay: 5.0s; }
+    .p2-line3 { animation-delay: 5.4s; }
+    .p2-line4 { animation-delay: 5.8s; }
+    .p2-line5 { animation-delay: 6.2s; }
+    .p2-line6 { animation-delay: 6.6s; }
+    .p2-line7 { animation-delay: 7.0s; }
+    .p2-line8 { animation-delay: 7.4s; }
+    .p2-line9 { animation-delay: 7.8s; }
+    
+    /* Phase 3: Verify (10s - 14s) */
+    .phase3 {
+      opacity: 0;
+      animation: fadeIn 0.3s ease forwards;
+    }
+    .p3-line1 { animation-delay: 9.0s; }
+    .p3-line2 { animation-delay: 9.5s; }
+    .p3-line3 { animation-delay: 9.9s; }
+    .p3-line4 { animation-delay: 10.3s; }
+    .p3-line5 { animation-delay: 10.7s; }
+    .p3-line6 { animation-delay: 11.1s; }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(2px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Separator lines */
+    .sep {
+      stroke: #21262d;
+      stroke-width: 1;
+    }
+  </style>
+
+  <!-- Terminal window -->
+  <rect class="terminal-bg" x="0" y="0" width="820" height="560" rx="12"/>
+  
+  <!-- Title bar -->
+  <rect class="terminal-header" x="0" y="0" width="820" height="38" rx="12"/>
+  <rect class="terminal-header" x="0" y="26" width="820" height="12"/>
+  
+  <!-- Window buttons -->
+  <circle class="btn-close" cx="20" cy="19" r="6"/>
+  <circle class="btn-min" cx="40" cy="19" r="6"/>
+  <circle class="btn-max" cx="60" cy="19" r="6"/>
+  
+  <text class="title-text" x="410" y="23" text-anchor="middle">ctx — ContextSubstrate v0.1</text>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- PHASE 1: CAPTURE AN AGENT RUN          -->
+  <!-- ═══════════════════════════════════════ -->
+  
+  <g class="phase1 p1-line1">
+    <text class="prompt" x="20" y="68">❯</text>
+    <text class="cmd" x="38" y="68">ctx capture --agent claude-code --task "refactor auth module"</text>
+  </g>
+  
+  <g class="phase1 p1-line2">
+    <text class="output" x="20" y="92">⠋ Capturing agent execution...</text>
+  </g>
+  
+  <g class="phase1 p1-line3">
+    <text class="output" x="20" y="116">  Prompt:      </text>
+    <text class="accent" x="130" y="116">system + user (2 messages, 847 tokens)</text>
+  </g>
+  
+  <g class="phase1 p1-line4">
+    <text class="output" x="20" y="140">  Tool calls:  </text>
+    <text class="accent" x="130" y="140">read_file × 4, edit_file × 7, run_tests × 2</text>
+  </g>
+  
+  <g class="phase1 p1-line5">
+    <text class="output" x="20" y="164">  Files:       </text>
+    <text class="accent" x="130" y="164">src/auth.ts, src/middleware.ts, tests/auth.test.ts</text>
+  </g>
+  
+  <g class="phase1 p1-line6">
+    <text class="output" x="20" y="188">  Model:       </text>
+    <text class="accent" x="130" y="188">claude-sonnet-4-5-20250929  temp=0.3</text>
+  </g>
+  
+  <g class="phase1 p1-line7">
+    <text class="success" x="20" y="218">✓ Context Pack created</text>
+  </g>
+  
+  <g class="phase1 p1-line8">
+    <text class="output" x="20" y="242">  </text>
+    <text class="hash" x="20" y="242">ctx://sha256:a3f8c1...7e2d</text>
+    <text class="dim" x="280" y="242">← share this hash to reproduce</text>
+  </g>
+
+  <!-- Separator -->
+  <line class="sep phase2 p2-line1" x1="20" y1="262" x2="800" y2="262"/>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- PHASE 2: DIFF TWO RUNS                 -->
+  <!-- ═══════════════════════════════════════ -->
+  
+  <g class="phase2 p2-line1">
+    <text class="prompt" x="20" y="286">❯</text>
+    <text class="cmd" x="38" y="286">ctx diff a3f8c1..7e2d b9d4e2..1f8a</text>
+  </g>
+
+  <g class="phase2 p2-line2">
+    <text class="output" x="20" y="310">⠋ Comparing decision points...</text>
+  </g>
+  
+  <g class="phase2 p2-line3">
+    <text class="warn" x="20" y="340">⚠ Decision Drift Detected</text>
+    <text class="dim" x="260" y="340">(3 divergence points)</text>
+  </g>
+
+  <g class="phase2 p2-line4">
+    <text class="dim" x="20" y="366">  ┌──────────────────┬────────────────────┬────────────────────┐</text>
+  </g>
+  <g class="phase2 p2-line5">
+    <text class="output" x="20" y="388">  │ Step             │ Run A              │ Run B              │</text>
+  </g>
+  <g class="phase2 p2-line6">
+    <text class="dim" x="20" y="410">  ├──────────────────┼────────────────────┼────────────────────┤</text>
+  </g>
+  <g class="phase2 p2-line7">
+    <text class="output" x="20" y="432">  │ </text>
+    <text class="highlight" x="45" y="432">tool_choice #3</text>
+    <text class="output" x="188" y="432">│ </text>
+    <text class="success" x="210" y="432">edit_file</text>
+    <text class="output" x="360" y="432">│ </text>
+    <text class="error" x="383" y="432">delete_file</text>
+    <text class="output" x="540" y="432">│</text>
+  </g>
+  <g class="phase2 p2-line8">
+    <text class="output" x="20" y="454">  │ </text>
+    <text class="highlight" x="45" y="454">param drift</text>
+    <text class="output" x="188" y="454">│ </text>
+    <text class="success" x="210" y="454">temp=0.3</text>
+    <text class="output" x="360" y="454">│ </text>
+    <text class="error" x="383" y="454">temp=0.7</text>
+    <text class="output" x="540" y="454">│</text>
+  </g>
+  <g class="phase2 p2-line9">
+    <text class="dim" x="20" y="476">  └──────────────────┴────────────────────┴────────────────────┘</text>
+  </g>
+
+  <!-- Separator -->
+  <line class="sep phase3 p3-line1" x1="20" y1="494" x2="800" y2="494"/>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- PHASE 3: VERIFY AN ARTIFACT            -->
+  <!-- ═══════════════════════════════════════ -->
+  
+  <g class="phase3 p3-line1">
+    <text class="prompt" x="20" y="518">❯</text>
+    <text class="cmd" x="38" y="518">ctx verify src/auth.ts</text>
+  </g>
+  
+  <g class="phase3 p3-line2">
+    <text class="success" x="20" y="542">✓ Verified</text>
+    <text class="output" x="115" y="542">— produced by </text>
+    <text class="hash" x="255" y="542">ctx://a3f8c1..7e2d</text>
+    <text class="output" x="440" y="542"> on 2026-02-11</text>
+  </g>
+
+  <!-- Blinking cursor at the end -->
+  <rect class="cursor phase3 p3-line6" x="20" y="555" width="8" height="2" rx="1">
+    <animate attributeName="opacity" values="1;1;0;0" dur="1.2s" begin="11.5s" repeatCount="indefinite"/>
+  </rect>
+</svg>
