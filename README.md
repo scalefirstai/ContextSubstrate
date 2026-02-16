@@ -126,6 +126,10 @@ The `ctx pack` command accepts a JSON execution log with the following structure
 - [ ] Web UI for pack inspection
 - [ ] IDE extensions
 
+## Used By
+
+- **[OpenRudder](https://github.com/scalefirstai/openrudder)** — Open source framework for change detection in microservices applications to build Ambient Agents. ContextSubstrate provides the execution substrate that makes OpenRudder's agent runs reproducible, auditable, and contestable.
+
 ## Non-Goals
 
 - **Runtime agent orchestration** — `ctx` captures and analyzes execution, it does not run agents
