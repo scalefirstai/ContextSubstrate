@@ -8,8 +8,10 @@ import (
 )
 
 var (
-	version = "dev"
-	verbose bool
+	version   = "dev"
+	commit    = "none"
+	buildDate = "unknown"
+	verbose   bool
 )
 
 var rootCmd = &cobra.Command{
@@ -18,7 +20,7 @@ var rootCmd = &cobra.Command{
 	Long: `ctx is an execution substrate for AI agents that makes their work
 reproducible, debuggable, and contestable using developer-native primitives
 (files, hashes, diffs, CLI workflows).`,
-	Version:       version,
+	Version:       version + " (commit: " + commit + ", built: " + buildDate + ")",
 	SilenceErrors: true,
 	SilenceUsage:  true,
 }

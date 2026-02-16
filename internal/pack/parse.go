@@ -10,13 +10,13 @@ import (
 
 // ExecutionLog represents the raw input format before conversion to a Pack manifest.
 type ExecutionLog struct {
-	Model        LogModel        `json:"model"`
-	SystemPrompt string          `json:"system_prompt"`
-	Prompts      []LogPrompt     `json:"prompts"`
-	Inputs       []LogInput      `json:"inputs"`
-	Steps        []LogStep       `json:"steps"`
-	Outputs      []LogOutput     `json:"outputs"`
-	Environment  LogEnvironment  `json:"environment"`
+	Model        LogModel       `json:"model"`
+	SystemPrompt string         `json:"system_prompt"`
+	Prompts      []LogPrompt    `json:"prompts"`
+	Inputs       []LogInput     `json:"inputs"`
+	Steps        []LogStep      `json:"steps"`
+	Outputs      []LogOutput    `json:"outputs"`
+	Environment  LogEnvironment `json:"environment"`
 }
 
 type LogModel struct {

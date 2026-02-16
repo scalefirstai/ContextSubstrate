@@ -1,3 +1,27 @@
+# Binary
+/ctx
+
+# Build output
+dist/
+
+# Test coverage
+coverage.*
+
+# Context store (local data)
+.ctx/
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Tool directories
 .beads
 .claude
 .windsurf
+
+# OS files
+.DS_Store
+Thumbs.db
