@@ -9,8 +9,8 @@
 <p align="center">
 
 [![CI](https://github.com/scalefirstai/ContextSubstrate/actions/workflows/ci.yml/badge.svg)](https://github.com/scalefirstai/ContextSubstrate/actions/workflows/ci.yml)
-[![Go Report Card](https://goreportcard.com/badge/github.com/contextsubstrate/ctx)](https://goreportcard.com/report/github.com/contextsubstrate/ctx)
-[![Go Reference](https://pkg.go.dev/badge/github.com/contextsubstrate/ctx.svg)](https://pkg.go.dev/github.com/contextsubstrate/ctx)
+[![Go Report Card](https://goreportcard.com/badge/github.com/scalefirstai/ContextSubstrate)](https://goreportcard.com/report/github.com/scalefirstai/ContextSubstrate)
+[![Go Reference](https://pkg.go.dev/badge/github.com/scalefirstai/ContextSubstrate.svg)](https://pkg.go.dev/github.com/scalefirstai/ContextSubstrate)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Release](https://img.shields.io/github/v/release/scalefirstai/ContextSubstrate)](https://github.com/scalefirstai/ContextSubstrate/releases/latest)
 
