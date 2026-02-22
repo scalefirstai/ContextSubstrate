@@ -1,0 +1,91 @@
+{
+  "model": {
+    "identifier": "gpt-4",
+    "parameters": {
+      "temperature": 0.0,
+      "max_tokens": 4096,
+      "top_p": 1.0
+    }
+  },
+  "system_prompt": "You are a research assistant. Use the provided tools to find information about the given topic, read relevant sources, and produce a concise summary report. Cite your sources.",
+  "prompts": [
+    {
+      "role": "user",
+      "content": "Research the current state of WebAssembly adoption in server-side applications. Find at least three recent sources, read them, and write a summary report to research_report.md."
+    }
+  ],
+  "inputs": [],
+  "steps": [
+    {
+      "index": 0,
+      "type": "tool_call",
+      "tool": "search",
+      "parameters": {
+        "query": "WebAssembly server-side adoption 2026"
+      },
+      "output": "Results:\n1. \"WebAssembly Beyond the Browser: 2026 State of Adoption\" - https://example.com/wasm-adoption-2026\n2. \"Running Wasm in Production: Lessons from Fermyon and Fastly\" - https://example.com/wasm-production-lessons\n3. \"WASI Preview 2 and the Future of Server-Side Wasm\" - https://example.com/wasi-preview-2\n4. \"Benchmarking Wasm vs Containers for Microservices\" - https://example.com/wasm-vs-containers",
+      "deterministic": false,
+      "timestamp": "2026-01-15T10:30:00Z"
+    },
+    {
+      "index": 1,
+      "type": "tool_call",
+      "tool": "read_url",
+      "parameters": {
+        "url": "https://example.com/wasm-adoption-2026"
+      },
+      "output": "WebAssembly Beyond the Browser: 2026 State of Adoption\n\nWebAssembly (Wasm) has made significant strides in server-side adoption over the past two years. According to the latest CNCF survey, 38% of organizations are now running Wasm workloads in production, up from 12% in 2024. Key drivers include the maturation of WASI (WebAssembly System Interface), improved toolchain support in Rust and Go, and the emergence of Wasm-native platforms like Fermyon Spin and Wasmtime.\n\nThe component model, finalized in late 2025, has been a game-changer for composability, allowing teams to combine modules written in different languages into single applications. Edge computing remains the strongest adoption vector, with Fastly and Cloudflare processing billions of Wasm-powered requests daily.",
+      "deterministic": false,
+      "timestamp": "2026-01-15T10:30:08Z"
+    },
+    {
+      "index": 2,
+      "type": "tool_call",
+      "tool": "read_url",
+      "parameters": {
+        "url": "https://example.com/wasm-production-lessons"
+      },
+      "output": "Running Wasm in Production: Lessons from Fermyon and Fastly\n\nFermyon's Spin framework has emerged as the leading platform for server-side Wasm applications. In production deployments, Spin applications demonstrate cold-start times under 1 millisecond, compared to 200-500ms for equivalent container-based services. Fastly's Compute platform processes over 4 trillion Wasm executions per month.\n\nChallenges remain: debugging tooling is still maturing, the ecosystem of Wasm-compatible libraries is smaller than native alternatives, and teams report a learning curve when adopting the component model. Despite these hurdles, both companies report that operational costs for Wasm workloads are 40-60% lower than containerized equivalents due to reduced memory footprint and faster scaling.",
+      "deterministic": false,
+      "timestamp": "2026-01-15T10:30:15Z"
+    },
+    {
+      "index": 3,
+      "type": "tool_call",
+      "tool": "read_url",
+      "parameters": {
+        "url": "https://example.com/wasi-preview-2"
+      },
+      "output": "WASI Preview 2 and the Future of Server-Side Wasm\n\nWASI Preview 2, released in Q3 2025, provides a stable set of interfaces for filesystem access, networking, HTTP, and clocks. This standardization has unlocked broader adoption by giving developers a reliable target for server-side applications.\n\nThe WASI proposal for key-value stores and message queues is expected in 2026, which would further reduce the gap between Wasm and traditional server environments. Language support has also expanded: Rust, C/C++, Go, Python (via componentize-py), and JavaScript (via StarlingMonkey) can all target WASI Preview 2.\n\nIndustry analysts predict that Wasm will handle 15% of all new microservice deployments by the end of 2027, particularly in latency-sensitive and multi-tenant environments.",
+      "deterministic": false,
+      "timestamp": "2026-01-15T10:30:22Z"
+    },
+    {
+      "index": 4,
+      "type": "tool_call",
+      "tool": "write_file",
+      "parameters": {
+        "filename": "research_report.md",
+        "content": "# WebAssembly Server-Side Adoption: Current State (2026)\n\n## Summary\n\nWebAssembly (Wasm) has transitioned from an experimental technology to a production-ready platform for server-side applications. As of early 2026, 38% of organizations surveyed by the CNCF run Wasm workloads in production, a significant increase from 12% in 2024.\n\n## Key Findings\n\n### Adoption Drivers\n- **WASI Preview 2** (released Q3 2025) provides stable interfaces for filesystem, networking, and HTTP, giving developers a reliable compilation target.\n- **The Component Model**, finalized in late 2025, enables composing modules written in different languages into unified applications.\n- **Performance advantages**: cold-start times under 1ms (vs. 200-500ms for containers) and 40-60% lower operational costs.\n\n### Production Usage\n- Fastly's Compute platform processes over 4 trillion Wasm executions monthly.\n- Fermyon Spin has emerged as the leading framework for server-side Wasm development.\n- Edge computing is the strongest adoption vector, with Cloudflare and Fastly leading deployment scale.\n\n### Remaining Challenges\n- Debugging tooling is still maturing compared to native environments.\n- The ecosystem of Wasm-compatible libraries is smaller than native alternatives.\n- Teams report a learning curve when adopting the component model.\n\n### Outlook\n- WASI proposals for key-value stores and message queues are expected in 2026.\n- Analysts predict Wasm will handle 15% of new microservice deployments by end of 2027.\n- Language support continues to expand: Rust, C/C++, Go, Python, and JavaScript all target WASI Preview 2.\n\n## Sources\n1. \"WebAssembly Beyond the Browser: 2026 State of Adoption\" - https://example.com/wasm-adoption-2026\n2. \"Running Wasm in Production: Lessons from Fermyon and Fastly\" - https://example.com/wasm-production-lessons\n3. \"WASI Preview 2 and the Future of Server-Side Wasm\" - https://example.com/wasi-preview-2\n"
+      },
+      "output": "File written: research_report.md (1847 bytes)",
+      "deterministic": true,
+      "timestamp": "2026-01-15T10:30:30Z"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "research_report.md",
+      "content": "# WebAssembly Server-Side Adoption: Current State (2026)\n\n## Summary\n\nWebAssembly (Wasm) has transitioned from an experimental technology to a production-ready platform for server-side applications. As of early 2026, 38% of organizations surveyed by the CNCF run Wasm workloads in production, a significant increase from 12% in 2024.\n\n## Key Findings\n\n### Adoption Drivers\n- **WASI Preview 2** (released Q3 2025) provides stable interfaces for filesystem, networking, and HTTP, giving developers a reliable compilation target.\n- **The Component Model**, finalized in late 2025, enables composing modules written in different languages into unified applications.\n- **Performance advantages**: cold-start times under 1ms (vs. 200-500ms for containers) and 40-60% lower operational costs.\n\n### Production Usage\n- Fastly's Compute platform processes over 4 trillion Wasm executions monthly.\n- Fermyon Spin has emerged as the leading framework for server-side Wasm development.\n- Edge computing is the strongest adoption vector, with Cloudflare and Fastly leading deployment scale.\n\n### Remaining Challenges\n- Debugging tooling is still maturing compared to native environments.\n- The ecosystem of Wasm-compatible libraries is smaller than native alternatives.\n- Teams report a learning curve when adopting the component model.\n\n### Outlook\n- WASI proposals for key-value stores and message queues are expected in 2026.\n- Analysts predict Wasm will handle 15% of new microservice deployments by end of 2027.\n- Language support continues to expand: Rust, C/C++, Go, Python, and JavaScript all target WASI Preview 2.\n\n## Sources\n1. \"WebAssembly Beyond the Browser: 2026 State of Adoption\" - https://example.com/wasm-adoption-2026\n2. \"Running Wasm in Production: Lessons from Fermyon and Fastly\" - https://example.com/wasm-production-lessons\n3. \"WASI Preview 2 and the Future of Server-Side Wasm\" - https://example.com/wasi-preview-2\n"
+    }
+  ],
+  "environment": {
+    "os": "darwin",
+    "runtime": "python3.12",
+    "tool_versions": {
+      "langchain": "0.3.14",
+      "langchain-openai": "0.3.5",
+      "openai": "1.60.0"
+    }
+  }
+}
