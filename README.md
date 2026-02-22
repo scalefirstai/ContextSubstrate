@@ -53,7 +53,19 @@ Agent Run → ctx pack → ctx://sha256:abc123…
 
 ## Quick Start
 
-### Installation
+```bash
+# Install ctx CLI (system-wide — don't clone this repo into your project)
+curl -fsSL https://raw.githubusercontent.com/scalefirstai/ContextSubstrate/main/scripts/install.sh | bash
+
+# Initialize in YOUR project
+cd your-project
+ctx init
+
+# Tell your agent
+echo "Use 'ctx' for execution tracking" >> AGENTS.md
+```
+
+### Other Installation Methods
 
 **Pre-built binaries** — download from [GitHub Releases](https://github.com/scalefirstai/ContextSubstrate/releases/latest) for Linux, macOS, and Windows (amd64/arm64).
 
@@ -75,9 +87,6 @@ make install      # installs to $GOPATH/bin
 ### First Run
 
 ```bash
-# Initialize a context store in your project
-ctx init
-
 # Pack an agent execution log into an immutable context pack
 ctx pack execution.json
 # → ctx://sha256:a1b2c3d4…
