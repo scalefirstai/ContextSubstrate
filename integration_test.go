@@ -3,10 +3,15 @@ package integration_test
 import (
 	"encoding/json"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"strings"
 	"testing"
 
+	"github.com/contextsubstrate/ctx/internal/delta"
 	ctxdiff "github.com/contextsubstrate/ctx/internal/diff"
+	"github.com/contextsubstrate/ctx/internal/graph"
+	"github.com/contextsubstrate/ctx/internal/index"
 	"github.com/contextsubstrate/ctx/internal/pack"
 	"github.com/contextsubstrate/ctx/internal/replay"
 	"github.com/contextsubstrate/ctx/internal/sharing"
@@ -31,6 +36,13 @@ func TestEndToEnd(t *testing.T) {
 	}
 	if _, err := os.Stat(filepath.Join(root, "config.json")); err != nil {
 		t.Fatalf("init: config.json missing: %v", err)
+	}
+	// Verify graph directories created by init
+	if _, err := os.Stat(filepath.Join(root, "graph", "manifests")); err != nil {
+		t.Fatalf("init: graph/manifests dir missing: %v", err)
+	}
+	if _, err := os.Stat(filepath.Join(root, "graph", "snapshots")); err != nil {
+		t.Fatalf("init: graph/snapshots dir missing: %v", err)
 	}
 	t.Log("init: OK")
 
@@ -290,4 +302,217 @@ func TestEndToEndSelfDiffNoDrift(t *testing.T) {
 	if report.HasDrift {
 		t.Fatal("self-diff should have no drift")
 	}
+}
+
+// TestEndToEndIndexDelta exercises the init → index → delta workflow.
+func TestEndToEndIndexDelta(t *testing.T) {
+	// Create a git repo with multiple commits
+	repoDir := t.TempDir()
+
+	gitRun := func(args ...string) {
+		t.Helper()
+		cmd := exec.Command("git", args...)
+		cmd.Dir = repoDir
+		cmd.Env = append(os.Environ(),
+			"GIT_AUTHOR_NAME=Test",
+			"GIT_AUTHOR_EMAIL=test@test.com",
+			"GIT_COMMITTER_NAME=Test",
+			"GIT_COMMITTER_EMAIL=test@test.com",
+		)
+		out, err := cmd.CombinedOutput()
+		if err != nil {
+			t.Fatalf("git %v: %s: %v", args, out, err)
+		}
+	}
+
+	gitRun("init")
+	gitRun("checkout", "-b", "main")
+
+	// Commit 1: initial files
+	os.WriteFile(filepath.Join(repoDir, "main.go"), []byte("package main\n\nfunc main() {}\n"), 0644)
+	os.WriteFile(filepath.Join(repoDir, "README.md"), []byte("# Project\n\nA test project.\n"), 0644)
+	os.WriteFile(filepath.Join(repoDir, "config.yaml"), []byte("version: 1\n"), 0644)
+	gitRun("add", ".")
+	gitRun("commit", "-m", "initial commit")
+
+	cmd := exec.Command("git", "rev-parse", "HEAD")
+	cmd.Dir = repoDir
+	out, err := cmd.Output()
+	if err != nil {
+		t.Fatal(err)
+	}
+	commit1 := strings.TrimSpace(string(out))
+
+	// Commit 2: modify main.go, add util.go, delete config.yaml
+	os.WriteFile(filepath.Join(repoDir, "main.go"), []byte("package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"hello\")\n}\n"), 0644)
+	os.WriteFile(filepath.Join(repoDir, "util.go"), []byte("package main\n\nfunc helper() string { return \"hi\" }\n"), 0644)
+	os.Remove(filepath.Join(repoDir, "config.yaml"))
+	gitRun("add", ".")
+	gitRun("commit", "-m", "update project")
+
+	cmd = exec.Command("git", "rev-parse", "HEAD")
+	cmd.Dir = repoDir
+	out, err = cmd.Output()
+	if err != nil {
+		t.Fatal(err)
+	}
+	commit2 := strings.TrimSpace(string(out))
+
+	// === 1. Init store ===
+	storeDir := t.TempDir()
+	root, err := store.InitStore(storeDir)
+	if err != nil {
+		t.Fatalf("init: %v", err)
+	}
+	t.Logf("init: store at %s", root)
+
+	// Verify graph directories
+	if _, err := os.Stat(filepath.Join(root, "graph", "manifests")); err != nil {
+		t.Fatalf("graph/manifests missing: %v", err)
+	}
+	if _, err := os.Stat(filepath.Join(root, "graph", "snapshots")); err != nil {
+		t.Fatalf("graph/snapshots missing: %v", err)
+	}
+
+	// === 2. Index commit 1 ===
+	if err := index.IndexCommit(root, repoDir, commit1); err != nil {
+		t.Fatalf("index commit1: %v", err)
+	}
+	t.Logf("index: indexed %s", commit1[:8])
+
+	// Verify JSONL files exist
+	files1, err := graph.ReadRecords[graph.FileSnapshot](graph.FilesPath(root, commit1))
+	if err != nil {
+		t.Fatalf("reading files for commit1: %v", err)
+	}
+	if len(files1) != 3 {
+		t.Fatalf("commit1: expected 3 file snapshots, got %d", len(files1))
+	}
+	t.Logf("index: commit1 has %d files", len(files1))
+
+	// Check file properties
+	for _, f := range files1 {
+		if f.ContentSHA256 == "" {
+			t.Error("file snapshot missing content hash")
+		}
+		if f.ByteSize == 0 {
+			t.Error("file snapshot has zero byte size")
+		}
+	}
+
+	// Verify commit record
+	commits, err := graph.ReadRecords[graph.CommitRecord](graph.CommitsPath(root))
+	if err != nil {
+		t.Fatalf("reading commits: %v", err)
+	}
+	if len(commits) != 1 {
+		t.Fatalf("expected 1 commit record, got %d", len(commits))
+	}
+	if commits[0].SHA != commit1 {
+		t.Errorf("commit SHA: got %q, want %q", commits[0].SHA, commit1)
+	}
+	if commits[0].Message != "initial commit" {
+		t.Errorf("commit message: got %q", commits[0].Message)
+	}
+
+	// === 3. Index commit 2 ===
+	if err := index.IndexCommit(root, repoDir, commit2); err != nil {
+		t.Fatalf("index commit2: %v", err)
+	}
+	t.Logf("index: indexed %s", commit2[:8])
+
+	files2, err := graph.ReadRecords[graph.FileSnapshot](graph.FilesPath(root, commit2))
+	if err != nil {
+		t.Fatalf("reading files for commit2: %v", err)
+	}
+	if len(files2) != 3 { // main.go, util.go, README.md (config.yaml deleted)
+		t.Fatalf("commit2: expected 3 file snapshots, got %d", len(files2))
+	}
+
+	// === 4. Compute delta ===
+	deltaReport, err := delta.ComputeDelta(root, commit1, commit2)
+	if err != nil {
+		t.Fatalf("delta: %v", err)
+	}
+	t.Logf("delta: %d changed, %d added, %d deleted",
+		len(deltaReport.FilesChanged), len(deltaReport.FilesAdded), len(deltaReport.FilesDeleted))
+
+	if deltaReport.IsEmpty() {
+		t.Fatal("delta should not be empty")
+	}
+
+	// main.go was modified
+	if len(deltaReport.FilesChanged) != 1 || deltaReport.FilesChanged[0] != "main.go" {
+		t.Errorf("FilesChanged: got %v, want [main.go]", deltaReport.FilesChanged)
+	}
+
+	// util.go was added
+	if len(deltaReport.FilesAdded) != 1 || deltaReport.FilesAdded[0] != "util.go" {
+		t.Errorf("FilesAdded: got %v, want [util.go]", deltaReport.FilesAdded)
+	}
+
+	// config.yaml was deleted
+	if len(deltaReport.FilesDeleted) != 1 || deltaReport.FilesDeleted[0] != "config.yaml" {
+		t.Errorf("FilesDeleted: got %v, want [config.yaml]", deltaReport.FilesDeleted)
+	}
+
+	// Verify JSON output
+	jsonData, err := deltaReport.JSON()
+	if err != nil {
+		t.Fatalf("delta JSON: %v", err)
+	}
+	var jsonCheck map[string]interface{}
+	if err := json.Unmarshal(jsonData, &jsonCheck); err != nil {
+		t.Fatalf("delta JSON parse: %v", err)
+	}
+
+	// Verify human output
+	humanOutput := deltaReport.Human()
+	if humanOutput == "" {
+		t.Fatal("delta: human output is empty")
+	}
+	if !strings.Contains(humanOutput, "main.go") {
+		t.Error("human output should mention main.go")
+	}
+
+	// === 5. Verify self-delta is empty ===
+	selfDelta, err := delta.ComputeDelta(root, commit2, commit2)
+	if err != nil {
+		t.Fatalf("self-delta: %v", err)
+	}
+	if !selfDelta.IsEmpty() {
+		t.Error("self-delta should be empty")
+	}
+
+	// === 6. Verify JSONL determinism ===
+	// Re-index commit1 (should be idempotent — skipped)
+	if err := index.IndexCommit(root, repoDir, commit1); err != nil {
+		t.Fatalf("re-index: %v", err)
+	}
+
+	// File snapshots should be identical
+	files1Again, err := graph.ReadRecords[graph.FileSnapshot](graph.FilesPath(root, commit1))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(files1Again) != len(files1) {
+		t.Fatalf("re-index changed file count: %d vs %d", len(files1Again), len(files1))
+	}
+	for i := range files1 {
+		if files1[i].ContentSHA256 != files1Again[i].ContentSHA256 {
+			t.Errorf("file %d hash mismatch after re-index", i)
+		}
+	}
+
+	// Verify path records accumulated correctly
+	paths, err := graph.ReadRecords[graph.PathRecord](graph.PathsPath(root))
+	if err != nil {
+		t.Fatal(err)
+	}
+	// Should have 4 unique paths: main.go, README.md, config.yaml, util.go
+	if len(paths) != 4 {
+		t.Fatalf("expected 4 path records, got %d", len(paths))
+	}
+
+	t.Log("=== Index → Delta integration test complete ===")
 }

@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+
+	"github.com/contextsubstrate/ctx/internal/graph"
 )
 
 const StoreDirName = ".ctx"
@@ -45,6 +47,11 @@ func InitStore(dir string) (string, error) {
 	configPath := filepath.Join(root, "config.json")
 	if err := os.WriteFile(configPath, data, 0644); err != nil {
 		return "", fmt.Errorf("writing config: %w", err)
+	}
+
+	// Initialize context graph directories
+	if err := graph.InitGraph(root); err != nil {
+		return "", fmt.Errorf("initializing graph: %w", err)
 	}
 
 	return root, nil
