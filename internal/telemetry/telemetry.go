@@ -31,7 +31,7 @@ type Run struct {
 
 // RunMetrics captures token usage and performance data for a run.
 type RunMetrics struct {
-	RunID              string  `json:"run_id"`
+	RunID              string  `json:"-"`
 	BaselineEstTokens  int     `json:"baseline_est_tokens"`
 	DeltaTokens        int     `json:"delta_tokens"`
 	TokensSaved        int     `json:"tokens_saved"`
