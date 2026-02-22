@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions and Discussion
+    url: https://github.com/scalefirstai/ContextSubstrate/discussions
+    about: Ask questions, share ideas, and discuss ContextSubstrate usage here instead of opening an issue.
