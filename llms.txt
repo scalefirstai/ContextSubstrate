@@ -1,0 +1,101 @@
+# ContextSubstrate
+
+> Reproducible, debuggable, contestable AI agent execution.
+
+`ctx` is a CLI tool that captures AI agent executions as immutable, content-addressed context packs — the same primitives developers already trust: files, hashes, diffs, and CLI workflows.
+
+Think of it as `git` for agent runs: every execution gets a SHA-256 hash, can be inspected, diffed against another run, replayed for verification, and traced back to its outputs.
+
+## Installation
+
+Pre-built binaries: download from GitHub Releases for Linux, macOS, and Windows (amd64/arm64).
+From source (requires Go 1.23+): go install github.com/scalefirstai/ContextSubstrate/cmd/ctx@latest
+
+## Core Commands
+
+- ctx init: Initialize a .ctx/ store in the current directory.
+- ctx pack <log-file>: Create an immutable context pack from a JSON execution log.
+- ctx show <hash>: Inspect a context pack's contents.
+- ctx log: List all finalized context packs ordered by creation date.
+- ctx diff <hash-a> <hash-b>: Compare two packs and produce a drift report. Use --human for readable output.
+- ctx replay <hash>: Re-execute an agent run step-by-step with fidelity tracking. Exit codes: 0 (exact), 1 (degraded), 2 (failed).
+- ctx verify <artifact>: Validate artifact provenance via sidecar metadata (.ctx.json).
+- ctx fork <hash>: Create a mutable draft from an existing pack for iteration.
+- ctx completion <shell>: Generate shell completions for bash, zsh, fish, or powershell.
+
+## Token Optimization Commands
+
+- ctx index: Index a git commit into the context graph. Flag: --commit <sha> (default HEAD).
+- ctx delta: Compute file-level changes between two commits. Flags: --base <sha> (required), --head <sha> (required), --human.
+- ctx optimize: Generate an optimized context pack for a task within a token budget. Flags: --task <description> (required), --commit <sha>, --token-cap 32000, --include-tests, --human.
+- ctx metrics: Display token savings dashboard. Flag: --limit N (default 20).
+- ctx benchmark: Compare cold vs warm token usage across commits. Flag: --commits N (default 10).
+
+## Global Flags
+
+- --verbose, -v: Enable verbose output.
+- --version: Show version, commit, and build date.
+
+## Features
+
+### Context Packs
+Immutable, content-addressed snapshots of AI agent executions. Each pack captures prompts, inputs, tool calls, model parameters, outputs, and environment metadata. Identified by SHA-256 hash (ctx://sha256:...). Tamper-evident, deduplicatable, and shareable by reference.
+
+### Deterministic Replay
+Re-execute a recorded agent run step-by-step. Reports fidelity at three levels: exact (all steps reproduced identically), degraded (non-deterministic steps diverged), or failed (deterministic steps could not reproduce). Detects environment drift, missing inputs, and step divergence.
+
+### Decision Drift Detection
+Structured comparison between two context packs. Identifies prompt drift, tool drift, parameter drift, reasoning drift, and output drift. Available in both JSON (machine-readable) and human-readable formats.
+
+### Contestable Outputs
+Every artifact an agent produces can be traced back to the execution that created it via sidecar metadata files (.ctx.json). Records pack hash, inputs used, tools involved, and confidence level.
+
+### Context Sharing
+Create mutable drafts from immutable packs. Edit the draft, then finalize into a new pack while maintaining full lineage via parent tracking.
+
+### Token Optimization
+Index your codebase into a context graph, track file-level changes between git commits, and generate optimized context packs that select the most relevant files and symbols for a given task within a token budget. Includes metrics dashboard and cold-vs-warm benchmarking.
+
+## Execution Log Format
+
+The ctx pack command accepts a JSON execution log with the following fields:
+
+- model: Object with identifier (string) and parameters (object, e.g. temperature).
+- system_prompt: The system prompt string.
+- prompts: Array of objects with role and content.
+- inputs: Array of objects with name and content.
+- steps: Array of objects with index, type, tool, parameters, output, deterministic (boolean), and timestamp.
+- outputs: Array of objects with name and content.
+- environment: Object with os, runtime, and tool_versions.
+
+## Storage Layout
+
+The .ctx/ directory contains:
+- config.json: Store metadata.
+- objects/: Content-addressed blob storage using SHA-256. Organized by first two hex chars of hash.
+- packs/: Pack manifest registry indexed by full hash.
+- graph/: Context graph for token optimization, containing manifests/ (JSONL metadata) and snapshots/ (per-commit file/symbol snapshots).
+
+## Design Principles
+
+- Content-addressed storage: Every blob stored by SHA-256 hash. Same content is never stored twice.
+- Canonical JSON serialization: Deterministic hashing via recursive key sorting.
+- Atomic writes: Blobs written to temp files then renamed atomically to prevent corruption.
+- Hash prefix resolution: Short prefixes (e.g. a1b2) resolve automatically with ambiguity detection.
+- Zero external dependencies: Only Go standard library and Cobra for CLI. No databases, no cloud services.
+- Single binary distribution: No runtime dependencies. Cross-platform (Linux, macOS, Windows; amd64, arm64).
+
+## Non-Goals
+
+- Not an agent orchestration platform. ctx captures and analyzes execution, it does not run agents.
+- Not a model hosting service. No inference, training, or model management.
+- Not a file sync tool. Not a replacement for git, rsync, or cloud storage.
+- Not real-time monitoring. Designed for post-hoc analysis, not live dashboards.
+
+## Links
+
+- Repository: https://github.com/scalefirstai/ContextSubstrate
+- Releases: https://github.com/scalefirstai/ContextSubstrate/releases
+- Contributing: https://github.com/scalefirstai/ContextSubstrate/blob/main/CONTRIBUTING.md
+- OpenRudder (uses ContextSubstrate): https://github.com/scalefirstai/openrudder
+- License: MIT
